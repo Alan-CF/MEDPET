@@ -14,10 +14,6 @@ app.use(express.json());
 
 const { WEBHOOK_VERIFY_TOKEN, API_TOKEN, BUSINESS_PHONE, API_VERSION, PORT } = process.env;
 
-const cleanPhoneNumber = (number) => {
-  return number.startsWith('521') ? number.replace("521", "52") : number;
-}
-
 app.post("/webhook", async (req, res) => {
   // log incoming messages
   console.log("Incoming webhook message:", JSON.stringify(req.body, null, 2));
@@ -25,11 +21,9 @@ app.post("/webhook", async (req, res) => {
   // check if the webhook request contains a message
   // details on WhatsApp text message payload: https://developers.facebook.com/docs/whatsapp/cloud-api/webhooks/payload-examples#text-messages
   const message = req.body.entry?.[0]?.changes[0]?.value?.messages?.[0];
-  const sender = req.body.entry?.[0]?.changes?.[0]?.value?.contacts?.[0]?.profile?.name;
 
   // check if the incoming message contains text
   if (message?.type === "text") {
-
     // send a reply message as per the docs here https://developers.facebook.com/docs/whatsapp/cloud-api/reference/messages
     await axios({
       method: "POST",
@@ -39,8 +33,8 @@ app.post("/webhook", async (req, res) => {
       },
       data: {
         messaging_product: "whatsapp",
-        to: cleanPhoneNumber(message.from),
-        text: { body: sender + " a bih" },
+        to: message.from,
+        text: { body: "Echo: " + message.text.body },
         context: {
           message_id: message.id, // shows the message as a reply to the original user message
         },
