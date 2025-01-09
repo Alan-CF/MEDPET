@@ -25,6 +25,7 @@ app.post("/webhook", async (req, res) => {
   // check if the webhook request contains a message
   // details on WhatsApp text message payload: https://developers.facebook.com/docs/whatsapp/cloud-api/webhooks/payload-examples#text-messages
   const message = req.body.entry?.[0]?.changes[0]?.value?.messages?.[0];
+  const sender = req.body.entry?.[0]?.changes?.[0]?.value?.contacts?.[0]?.profile?.name;
 
   // check if the incoming message contains text
   if (message?.type === "text") {
@@ -39,7 +40,7 @@ app.post("/webhook", async (req, res) => {
       data: {
         messaging_product: "whatsapp",
         to: cleanPhoneNumber(message.from),
-        text: { body: "Echo: " + message.text.body },
+        text: { body: sender + " a bih" },
         context: {
           message_id: message.id, // shows the message as a reply to the original user message
         },
