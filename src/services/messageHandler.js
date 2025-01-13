@@ -1,4 +1,5 @@
 import whatsappService from "./whatsappService.js";
+import appendToSheet from "./googleSheetsService.js";
 
 const cleanPhoneNumber = (number) => {
   return number.startsWith("521") ? number.replace("521", "52") : number;
@@ -141,7 +142,9 @@ class MessageHandler {
       appointment.time,
     ];
 
-    return `Gracias por agendar una cita con nosotros ${appointment.name}. Estaremos atendiendo a ${appointment.petName} el/la ${appointment.petType}, a las ${appointment.time}, por el motivo: ${appointment.reason}.`;
+    appendToSheet(userData);
+
+    return `Gracias por agendar una cita con nosotros ${appointment.name}. Estaremos atendiendo a ${appointment.petName}, a las ${appointment.time}, por el motivo: ${appointment.reason}.`;
   }
 
   async handleApointmentFlow(to, message) {
