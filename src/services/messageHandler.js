@@ -127,6 +127,23 @@ class MessageHandler {
     }
   }
 
+  completeAppointment(to) {
+    const appointment = this.appointmentState[to];
+    delete this.appointmentState[to];
+
+    //Guardar en base de datos.
+    const userData = [
+      to,
+      appointment.name,
+      appointment.petName,
+      appointment.petType,
+      appointment.reason,
+      appointment.time,
+    ];
+
+    return `Gracias por agendar una cita con nosotros ${appointment.name}. Estaremos atendiendo a ${appointment.petName} el/la ${appointment.petType}, a las ${appointment.time}, por el motivo: ${appointment.reason}.`;
+  }
+
   async handleApointmentFlow(to, message) {
     const state = this.appointmentState[to];
     let response;
@@ -154,8 +171,7 @@ class MessageHandler {
         break;
       case "time":
         state.time = message;
-        response = `Gracias por agendar una cita con nosotros ${state.name}. Estaremos atendiendo a ${state.petName} el/la ${state.petType}, a las ${state.time}, por el motivo: ${state.reason}.`;
-        delete this.appointmentState[to];
+        response = this.completeAppointment(to);
         break;
     }
     console.log(this.appointmentState[to]);
