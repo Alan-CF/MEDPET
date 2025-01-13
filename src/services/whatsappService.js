@@ -68,6 +68,65 @@ class WhatsAppService {
       console.error(e);
     }
   }
+
+  async sendMediaMessage(to, type, mediaUrl, caption) {
+    try {
+      const mediaObject = {};
+      switch (type) {
+        case "image":
+          mediaObject.image = { link: mediaUrl, caption: caption };
+          break;
+        case "audio":
+          mediaObject.audio = { link: mediaUrl };
+          console.log("audio case");
+          break;
+        case "video":
+          mediaObject.video = { link: mediaUrl, caption: caption };
+          break;
+        case "document":
+          mediaObject.document = {
+            link: mediaUrl,
+            caption: caption,
+            filename: "medpet.pdf",
+          };
+          break;
+        case defaut:
+          throw new Error("Not suported media type");
+      }
+      console.log("Retrieving ", type);
+      const req = {
+        method: "POST",
+        url: `https://graph.facebook.com/${config.API_VERSION}/${config.BUSINESS_PHONE}/messages`,
+        headers: {
+          Authorization: `Bearer ${config.API_TOKEN}`,
+        },
+        data: {
+          messaging_product: "whatsapp",
+          to,
+          type: type,
+          ...mediaObject,
+        },
+      };
+
+      console.log(req);
+      await axios({
+        method: "POST",
+        url: `https://graph.facebook.com/${config.API_VERSION}/${config.BUSINESS_PHONE}/messages`,
+        headers: {
+          Authorization: `Bearer ${config.API_TOKEN}`,
+        },
+        data: {
+          messaging_product: "whatsapp",
+          to,
+          type: type,
+          ...mediaObject,
+        },
+      });
+    } catch (e) {
+      console.error("Error sending media", e);
+    }
+    console.log("Sent ", type);
+  }
 }
 
 export default new WhatsAppService();
