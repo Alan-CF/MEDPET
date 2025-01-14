@@ -1,4 +1,4 @@
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -8,4 +8,5 @@ export default {
   BUSINESS_PHONE: process.env.BUSINESS_PHONE,
   API_VERSION: process.env.API_VERSION,
   PORT: process.env.PORT || 3000,
+  CHATGPT_API_KEY: process.env.CHATGPT_API_KEY,
 };
