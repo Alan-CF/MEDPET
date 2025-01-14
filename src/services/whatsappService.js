@@ -127,6 +127,52 @@ class WhatsAppService {
     }
     console.log("Sent ", type);
   }
+
+  async sendContactMessage(to, contact) {
+    try {
+      await axios({
+        method: "POST",
+        url: `https://graph.facebook.com/${config.API_VERSION}/${config.BUSINESS_PHONE}/messages`,
+        headers: {
+          Authorization: `Bearer ${config.API_TOKEN}`,
+        },
+        data: {
+          messaging_product: "whatsapp",
+          to,
+          type: "contacts",
+          contacts: [contact]
+        }
+      });
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  async sendLocationMessage(to, latitude, longitude, name, address) {
+    try {
+      await axios({
+        method: "POST",
+        url: `https://graph.facebook.com/${config.API_VERSION}/${config.BUSINESS_PHONE}/messages`,
+        headers: {
+          Authorization: `Bearer ${config.API_TOKEN}`,
+        },
+        data: {
+          messaging_product: "whatsapp",
+          to,
+          type: "location",
+          location: {
+            latitude: latitude,
+            longitude: longitude,
+            name: name,
+            address: address
+          }
+          
+        },
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  }
 }
 
 export default new WhatsAppService();

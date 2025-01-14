@@ -76,16 +76,28 @@ class MessageHandler {
   async handleMenuOption(to, option) {
     let response;
     switch (option) {
-      case "option_1":
+      case "option_1":  // Agendar
         this.appointmentState[to] = { step: "name" };
         response = "Por favor ingresa tu nombre.";
         break;
-      case "option_2":
+      case "option_2":  // Consultar
         this.assistantState[to] = { step: 'question' };
         response = "Realiza tu consulta.";
         break;
-      case "option_3":
+      case "option_3":  // ubicacion
+        response = "Te esperamos en nuestra sucursal.";
+        await this.sendLocation(to);
+        break;
+      case "option_4":  // Consultar/Si, Gracias
+        response = "Me alegra escucharlo.";
+        break;
+      case "option_5":  // Consultar/Otra pregunta
+        this.assistantState[to] = { step: 'question' };
         response = "Esta es nuestra ubicación.";
+        break;
+      case "option_6":  // // Consultar/Emergencia
+        response = "Si esto es una emerencia te invitamos a llamar a nuestra linea de atencion.";
+        await this.sendContact(to);
         break;
       default:
         response =
@@ -196,6 +208,65 @@ class MessageHandler {
     delete this.assistantState[to];
     await whatsappService.sendMessage(to, response);
     await whatsappService.sendInteractiveButtons(to, menuMessage, buttons);
+  }
+
+  async sendContact(to) {
+    const contact = {
+      addresses: [
+        {
+          street: "123 Calle de las Mascotas",
+          city: "Ciudad",
+          state: "Estado",
+          zip: "12345",
+          country: "País",
+          country_code: "PA",
+          type: "WORK"
+        }
+      ],
+      emails: [
+        {
+          email: "contacto@medpet.com",
+          type: "WORK"
+        }
+      ],
+      name: {
+        formatted_name: "MedPet Contacto",
+        first_name: "MedPet",
+        last_name: "Contacto",
+        middle_name: "",
+        suffix: "",
+        prefix: ""
+      },
+      org: {
+        company: "MedPet",
+        department: "Atención al Cliente",
+        title: "Representante"
+      },
+      phones: [
+        {
+          phone: "+1234567890",
+          wa_id: "1234567890",
+          type: "WORK"
+        }
+      ],
+      urls: [
+        {
+          url: "https://www.medpet.com",
+          type: "WORK"
+        }
+      ]
+    };
+
+    await whatsappService.sendContactMessage(to, contact);
+  }
+
+  async sendLocation(to) {
+    const latitud = 6.2071694;
+    const longitud = -75.574607;
+    const name = "Plaza Medellin";
+    const address = "Cra. 43A #5A - 113, El poblado, Medellin, Antioquia.";
+
+    await whatsappService.sendLocationMessage(to, latitud, longitud, name, address);
   }
 }
 
