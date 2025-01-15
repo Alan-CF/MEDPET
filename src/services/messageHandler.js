@@ -93,7 +93,7 @@ class MessageHandler {
         break;
       case "option_5":  // Consultar/Otra pregunta
         this.assistantState[to] = { step: 'question' };
-        response = "Esta es nuestra ubicación.";
+        response = "Realice su consulta.";
         break;
       case "option_6":  // // Consultar/Emergencia
         response = "Si esto es una emerencia te invitamos a llamar a nuestra linea de atencion.";
